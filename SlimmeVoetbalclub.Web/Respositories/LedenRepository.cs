@@ -1,0 +1,65 @@
+﻿using Microsoft.Data.SqlClient;
+using SlimmeVoetbalclub.Web.Models;
+using System.Data;
+
+namespace SlimmeVoetbalclub.Web.Repositories
+{
+    /*
+       Deze Repository is de enige plek die met de database praat. 
+       Ik gebruik ADO.NET (SqlClient) in plaats van een ORM, 
+       waardoor ik zelf de controle heb over de SQL-queries en de mapping.
+    */
+    public class LedenRepository
+    {
+        private readonly string _connectionString;
+
+        public LedenRepository(IConfiguration configuration)
+        {
+            // Haal het adres van de database op (uit appsettings.json)
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
+
+        public List<Lid> GetAllLeden()
+        {
+            var ledenLijst = new List<Lid>();
+
+            // STAP 1: Doe de deur naar de database open
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                // STAP 2: Stel de vraag aan de database (Hé, geef me alles uit de tabel!)
+                string sql = "SELECT * FROM Lidmaatschap";
+                SqlCommand command = new SqlCommand(sql, connection);
+
+                connection.Open();
+
+                // STAP 3: Loop door alle rijen die de database teruggeeft
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // STAP 4: Stop de gegevens uit de database in ons C# 'bakje' (Lid.cs)
+                        var lid = new Lid
+                        {
+                            // Pak de kolom uit SQL en stop het in het juiste vakje in C#
+                            LidID = Convert.ToInt32(reader["LidID"]),
+                            Voornaam = reader["Voornaam"].ToString(),
+                            Achternaam = reader["Achternaam"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Geboortedatum = Convert.ToDateTime(reader["Geboortedatum"]),
+                            IsActief = Convert.ToBoolean(reader["IsActief"]),
+
+                            // Als het team-vakje in SQL leeg is, laat het dan ook leeg in C#
+                            TeamID = reader["TeamID"] != DBNull.Value ? Convert.ToInt32(reader["TeamID"]) : null
+                        };
+
+                        // Voeg dit lid toe aan onze lijst met alle leden
+                        ledenLijst.Add(lid);
+                    }
+                }
+            }
+
+            // Geef de hele lijst met leden terug aan de website
+            return ledenLijst;
+        }
+    }
+}
