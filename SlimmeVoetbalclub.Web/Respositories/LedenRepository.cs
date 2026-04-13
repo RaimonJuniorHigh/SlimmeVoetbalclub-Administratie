@@ -61,5 +61,27 @@ namespace SlimmeVoetbalclub.Web.Repositories
             // Geef de hele lijst met leden terug aan de website
             return ledenLijst;
         }
+
+        public void AddLid(Lid lid)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                // De SQL vraag om een nieuwe rij toe te voegen
+                string sql = "INSERT INTO Lidmaatschap (Voornaam, Achternaam, Email, Geboortedatum, IsActief) " +
+                             "VALUES (@Voornaam, @Achternaam, @Email, @Geboortedatum, @IsActief)";
+
+                SqlCommand command = new SqlCommand(sql, connection);
+
+                // BEVEILIGING: We gebruiken parameters om SQL-injectie te voorkomen
+                command.Parameters.AddWithValue("@Voornaam", lid.Voornaam);
+                command.Parameters.AddWithValue("@Achternaam", lid.Achternaam);
+                command.Parameters.AddWithValue("@Email", lid.Email);
+                command.Parameters.AddWithValue("@Geboortedatum", lid.Geboortedatum);
+                command.Parameters.AddWithValue("@IsActief", lid.IsActief);
+
+                connection.Open();
+                command.ExecuteNonQuery(); // Voer de opdracht uit
+            }
+        }
     }
 }

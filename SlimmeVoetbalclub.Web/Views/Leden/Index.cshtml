@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SlimmeVoetbalclub.Web.Models.Lid>
+
+@{
+    ViewData["Title"] = "Ledenoverzicht";
+}
+
+<h1>Ledenlijst</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nieuw Lid Toevoegen</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Naam</th>
+            <th>Email</th>
+            <th>Geboortedatum</th>
+            <th>Actief</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.VolledigeNaam</td>
+                <td>@item.Email</td>
+                <td>@item.Geboortedatum.ToShortDateString()</td>
+                <td>@(item.IsActief ? "Ja" : "Nee")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.LidID">Aanpassen</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

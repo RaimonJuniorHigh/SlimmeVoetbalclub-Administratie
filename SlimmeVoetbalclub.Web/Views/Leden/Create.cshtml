@@ -1,0 +1,45 @@
+﻿@model SlimmeVoetbalclub.Web.Models.Lid
+
+@{
+    ViewData["Title"] = "Nieuw Lid";
+}
+
+<h1>Nieuw Lid Inschrijven</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div class="form-group mb-3">
+                <label class="control-label">Voornaam</label>
+                <input asp-for="Voornaam" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Achternaam</label>
+                <input asp-for="Achternaam" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">E-mailadres</label>
+                <input asp-for="Email" class="form-control" type="email" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Geboortedatum</label>
+                <input asp-for="Geboortedatum" class="form-control" type="date" />
+            </div>
+
+            <div class="form-group form-check mb-3">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActief" /> Lid is meteen actief
+                </label>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Opslaan" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-secondary">Terug naar lijst</a>
+            </div>
+        </form>
+    </div>
+</div>
