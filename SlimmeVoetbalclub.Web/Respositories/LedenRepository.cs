@@ -83,5 +83,37 @@ namespace SlimmeVoetbalclub.Web.Repositories
                 command.ExecuteNonQuery(); // Voer de opdracht uit
             }
         }
+
+        public void GenerateDummyLeden(int aantal)
+        {
+            // Lijst met namen om willekeurig uit te kiezen
+            string[] voornamen = { "Sven", "Lars", "Tessa", "Milan", "Fleur", "Bram", "Anouk", "Daan" };
+            string[] achternamen = { "de Jong", "Scheffers", "Bakker", "Smit", "Visser", "De derde", "Mulder" };
+            Random random = new Random();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                for (int i = 0; i < aantal; i++)
+                {
+                    // Kies een willekeurige voor en achternaam
+                    string vNaam = voornamen[random.Next(voornamen.Length)];
+                    string aNaam = achternamen[random.Next(achternamen.Length)];
+                    string email = vNaam.ToLower() + "." + aNaam.Replace(" ", "").ToLower() + "@gmail.com";
+
+                    string sql = "INSERT INTO Lidmaatschap (Voornaam, Achternaam, Email, Geboortedatum, IsActief) " +
+                         "VALUES (@v, @a, @e, @g, 1)";
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@v", vNaam);
+                        command.Parameters.AddWithValue("@a", aNaam);
+                        command.Parameters.AddWithValue("@e", email);
+                        command.Parameters.AddWithValue("@g", new DateTime(random.Next(1990, 2015), random.Next(1, 12), random.Next(1, 28)));
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
     }
 }

@@ -40,6 +40,14 @@ namespace SlimmeVoetbalclub.Web.Controllers
             // Als het klaar is, sturen we de gebruiker terug naar de lijst
             return RedirectToAction("Index");
         }
+        public IActionResult GenereerDummyData()
+        {
+            // Roepen de dummy functie op
+            _ledenRepository.GenerateDummyLeden(10);
+
+            // Na het genereren terug naar de index pagina
+            return RedirectToAction("Index");
+        }
 
     }
 }
